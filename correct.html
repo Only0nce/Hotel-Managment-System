@@ -1,37 +1,68 @@
 <!DOCTYPE html>
 <html>
+
+<head>
+  <title>Edit</title>
+  <script src="https://www.gstatic.com/firebasejs/7.15.5/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/7.15.5/firebase-database.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.4.8/dist/sweetalert2.all.min.js"></script>
+  <link rel="stylesheet" type="text/css" href="./css/style.css">
+  <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+  <link
+    href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
+    rel="stylesheet">
+
+  <!-- Custom styles for this template-->
+  <link href="css/sb-admin-2.min.css" rel="stylesheet">
+  <link href="css/sb-admin-2.css" rel="stylesheet">
+</head>
+
 <body>
 
-<h1 id="room_name">room</h1>
-<select id="chooseBtn" onchange="feed(this)">
-</select>
-<br>
-<label for="fname" >room type:</label>
-  <input type="text" name="fname" id="room_type"><br><br>
-  <label for="lname">details:</label>
-  <input type="text" name="lname" id="details"><br><br>
-  <label for="lname">info:</label>
-  <input type="text" name="lname" id="price"><br><br>
-  <label for="lname">status:</label>
-  <input type="text" name="lname" id="status"><br><br>
-  <input type="submit" value="Submit" onclick="saveBtn()">
-  <button id="myButton" class="float-left submit-button" >Home</button>
+  <div class='col-lg-6 mb-4'>
+    <div class="card shadow mb-4">
+      <div class="card-header py-3 d-flex flex-row">
+        <h3 id="room_name" class="m-0 font-weight-bold text-primary"></h3>
+        <select id="chooseBtn" onchange="feed(this)" class="d-lg-inline small dropdown-item">
+        </select>
+      </div>
+      <div class="card-body">
+        <br>
+        <div id="room-photo"></div>
+        <label for="fname">room type:</label>
+        <input type="text" name="fname" id="room_type"><br><br>
+        <label for="lname">details:</label>
+        <input type="text" name="lname" id="details"><br><br>
+        <label for="lname">info:</label>
+        <input type="text" name="lname" id="price"><br><br>
+        <label for="lname">status:</label>
+        <input type="text" name="lname" id="status"><br><br>
+        <input type="submit" value="Submit" onclick="saveBtn()">
+        <button id="myButton" class="float-left submit-button">Home</button>>
+      </div>
+    </div>
+  </div>
 
-<script type="text/javascript">
+  <!-- Bootstrap core JavaScript-->
+  <script src="vendor/jquery/jquery.min.js"></script>
+  <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+  <!-- Core plugin JavaScript-->
+  <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
+
+  <script type="text/javascript">
     document.getElementById("myButton").onclick = function () {
-        location.href = "http://127.0.0.1:5501/Final_Project-master/index.html";
+      location.href = "http://127.0.0.1:5500/index.html";
     };
-</script>
+  </script>
 
-<p>Click the "Submit" button and the form-data will be sent to a page on the 
-server called "action_page.php".</p>
+  <p>Click the "Submit" button and the form-data will be sent to a page on the
+    server called "action_page.php".</p>
 
-<script src="https://www.gstatic.com/firebasejs/7.15.5/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/7.15.5/firebase-database.js"></script>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.4.8/dist/sweetalert2.all.min.js"></script>
-<script type="text/javascript">
-    
+
+  <script type="text/javascript">
+
     const firebaseConfig = {
       apiKey: "AIzaSyBWypg0ltpnvfDkhE3SdiV0ZJc75f4tkUI",
       authDomain: "hotel-management-system-fcba4.firebaseapp.com",
@@ -48,68 +79,73 @@ server called "action_page.php".</p>
     var queryString = window.location.search;
     var urlParams = new URLSearchParams(queryString);
     var data = urlParams.get('name');
-    var ref = firebase.database().ref("hotel/room/"+data)
-    document.getElementById('room_name').innerHTML = "room:"+data
-    ref.on('value',(snapshot)=>{
+    var ref = firebase.database().ref("hotel/room/" + data)
+    document.getElementById('room_name').innerHTML = "" + data
+    ref.on('value', (snapshot) => {
+      let item = snapshot.val()
+      console.log(item)
+      $('#room_photo').val(item['photo'])
+      $('#room_type').val(item['room_type'])
+      $('#details').val(item['details'])
+      $('#price').val(item['info']['price'])
+      $('#status').val(item['status'])
+    })
+
+    ref = firebase.database().ref("hotel/room")
+    ref.on('value', (snapshot) => {
+      let data = snapshot.val()
+      $("#chooseBtn").empty()
+      Object.keys(data).forEach(item => {
+        console.log(item)
+        $("#chooseBtn").append("<option>" + item + "</option>")
+      })
+    })
+
+    function feed(e) {
+      ref = firebase.database().ref("hotel/room/" + e.value)
+      document.getElementById('room_name').innerHTML = "" + e.value
+      ref.on('value', (snapshot) => {
         let item = snapshot.val()
         console.log(item)
-        
+        $('#room-photo').empty()
+        $('#room-photo').append(`<div class="text-center">
+                                        <img class="img-fluid px-3 px-sm-4 mt-3 mb-4" style="width: 30rem;"
+                                                src="${item['photo']}" alt="...">
+                                  </div>`)
         $('#room_type').val(item['room_type'])
         $('#details').val(item['details'])
         $('#price').val(item['info']['price'])
         $('#status').val(item['status'])
-    })
-
-    ref = firebase.database().ref("hotel/room")
-    ref.on('value',(snapshot)=>{
-        let data = snapshot.val()
-        $("#chooseBtn").empty()
-        Object.keys(data).forEach(item=>{
-            console.log(item)
-            $("#chooseBtn").append("<option>"+item+"</option>")
-        })
-    })
-
-    function feed(e){
-        ref = firebase.database().ref("hotel/room/"+e.value)
-        document.getElementById('room_name').innerHTML = "room:"+e.value
-        ref.on('value',(snapshot)=>{
-            let item = snapshot.val()
-            console.log(item)
-            
-            $('#room_type').val(item['room_type'])
-            $('#details').val(item['details'])
-            $('#price').val(item['info']['price'])
-            $('#status').val(item['status'])
-        })
+      })
     }
 
-    function saveBtn(){
-        ref = firebase.database().ref("hotel/room/"+data)
-        ref.child('room_type').set($('#room_type').val())
-        ref.child('info').child('price').set($('#price').val())
-        ref.child('details').set($('#details').val())
-        ref.child('status').set($('#status').val())
-        Swal.fire(
+    function saveBtn() {
+      ref = firebase.database().ref("hotel/room/" + data)
+      ref.child('room_type').set($('#room_type').val())
+      ref.child('info').child('price').set($('#price').val())
+      ref.child('details').set($('#details').val())
+      ref.child('status').set($('#status').val())
+      Swal.fire(
         'Successful!',
         'บันทึกสำเร็จ!',
         'success'
-        ).then((result) => {
-            /* Read more about isConfirmed, isDenied below */
-            if (result.isConfirmed) {
-              Swal.fire('Saved!', '', 'success')
-            } else if (result.isDenied) {
-              Swal.fire('Changes are not saved', '', 'info')
-            }
-          })
-        /*
-        $('#room_type').val('')
-        $('#details').val('')
-        $('#price').val('')
-        $('#status').val('')
-        */
+      ).then((result) => {
+        /* Read more about isConfirmed, isDenied below */
+        if (result.isConfirmed) {
+          Swal.fire('Saved!', '', 'success')
+        } else if (result.isDenied) {
+          Swal.fire('Changes are not saved', '', 'info')
+        }
+      })
+      /*
+      $('#room_type').val('')
+      $('#details').val('')
+      $('#price').val('')
+      $('#status').val('')
+      */
     }
 
-</script>
+  </script>
 </body>
+
 </html>
