@@ -1,0 +1,5 @@
+#rooms > div {
+    display: inline-block;
+    margin-right: 0px;
+    width: 49%;
+}
