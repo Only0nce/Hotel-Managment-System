@@ -107,7 +107,9 @@
                 )    
             }
 
-
+            showDebug(name,price,status){
+                console.log("name: "+name+"\nprice: "+price+"\nstatus: "+status);
+            }
         }
 
         function regis(text){
@@ -131,6 +133,7 @@
                 this.details = details
                 this.price = price
                 this.status = status
+                super.showDebug(this.name,this.price,this.status);
             }
 
             set set_price(price){
@@ -139,6 +142,10 @@
             }
             get status_text(){
                 return (this.status==0)?"ห้องเต็ม":"ห้องว่าง"
+            }
+
+            showDebug(){
+                console.log("name: "+this.name+"\nprice: "+this.price+"\nstatus: "+this.status);
             }
 
             get element(){
@@ -173,6 +180,7 @@
                     console.log(item)
                     let el = new card(item['name'],item['photo'],item['room_type'],item['details'],item['info']['price'],item['status'])
                     console.log(el.element)
+                    el.showDebug();
                     $('#rooms').append(el.element)   
                  }else{
 
