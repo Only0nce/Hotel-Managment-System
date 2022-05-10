@@ -49,11 +49,6 @@
 
             <!-- Begin Page Content -->
             <div class="container-fluid">
-                <!-- Page Heading -->
-                <div class="d-sm-flex align-items-center justify-content-between mb-4">
-                    <a href="reserve.html" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i
-                        class="fas fa-pen fa-sm text-white-80"></i> Reserve the Rooms</a>
-                </div>
                 <!-- Content Row -->
                 <div id="rooms"></div>
             </div>
@@ -99,7 +94,7 @@
         class firebaseConnect{
              constructor(){
                  
-             }
+            }
             
             write(path,key,val,text="none"){
                 let path_set = firebase.database().ref(path)
@@ -110,8 +105,8 @@
                   text,
                   'success'
                 )    
-                       
             }
+
 
         }
 
