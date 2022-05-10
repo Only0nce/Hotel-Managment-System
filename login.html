@@ -108,6 +108,7 @@
 				try{
 					if(snapshot.val()['password']==pass){
 						console.log("login successful")
+                        sessionStorage.setItem("login%",pass)
                         location.href = "index.html";
 					}
 				}catch(e){

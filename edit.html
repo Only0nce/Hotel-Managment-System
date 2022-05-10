@@ -38,7 +38,7 @@
           <div id="room-photo"></div>
           <div class="m-4">
             <div class="input-group mt-3 mb-3">
-              <button type="button" class="btn btn-primary" disabled>
+              <button type="button" class="btn btn-primary" disabled width="200px">
                 <i class="fas fa-light fa-archway"></i>
                 Room Type
               </button>
@@ -53,7 +53,7 @@
               </ul>
             </div>
             <div class="input-group mt-3 mb-3">
-              <button type="button" class="btn btn-success"  data-bs-toggle="dropdown" disabled>
+              <button type="button" class="btn btn-success"  data-bs-toggle="dropdown" disabled width="200px">
                 <i class="fas fa-light fa-info"></i>
                 Details
               </button>
@@ -64,7 +64,7 @@
                 <i class="fas fa-solid fa-dollar-sign"></i>
                 Price 
               </button>
-              <input type="text" class="form-control ml-2" id="details"><br><br>
+              <input type="text" class="form-control ml-2" id="price"><br><br>
             </div>
             <!-- <label for="lname">details:</label>
             <input type="text" name="lname" id="details"><br><br>
@@ -131,6 +131,7 @@
     var urlParams = new URLSearchParams(queryString);
     var data = urlParams.get('name');
     var ref = firebase.database().ref("hotel/room/" + data)
+    
     document.getElementById('room_name').innerHTML = "" + (data == null) ? "" : data
     ref.on('value', (snapshot) => {
       let item = snapshot.val()
@@ -152,8 +153,6 @@
       })
     })
 
-
-
     function select_status(text) {
       $("#room_type").text(text)
     }
@@ -162,7 +161,7 @@
       console.log(e)
       ref = firebase.database().ref("hotel/room/" + e)
       document.getElementById('room_name').innerHTML = "" + e
-      ref.on('value', (snapshot) => {
+      ref.once('value', (snapshot) => {
         let item = snapshot.val()
         console.log(item)
         $("#name_choose").text(e)
@@ -174,28 +173,46 @@
         $('#room_type').text(item['room_type'])
         $('#details').val(item['details'])
         $('#price').val(item['info']['price'])
+        console.log(item['status']=="1")
+        if(item['status']=="1"){
+          $("#radio1").prop("checked", false);
+          $("#radio2").prop("checked", true);
+        }else{
+          $("#radio1").prop("checked", true);
+          $("#radio2").prop("checked", false);
+        }
         $('#status').val(item['status'])
       })
     }
 
     function saveBtn() {
-      ref = firebase.database().ref("hotel/room/" + data)
-      ref.child('room_type').set($('#room_type').text())
-      ref.child('info').child('price').set($('#price').val())
-      ref.child('details').set($('#details').val())
-      ref.child('status').set($('#status').val())
-      Swal.fire(
-        'Successful!',
-        'บันทึกสำเร็จ!',
-        'success'
-      ).then((result) => {
-        /* Read more about isConfirmed, isDenied below */
-        if (result.isConfirmed) {
-          Swal.fire('Saved!', '', 'success')
-        } else if (result.isDenied) {
-          Swal.fire('Changes are not saved', '', 'info')
+      if($('#price').val()!="" && $('#details').val() !=""){
+        ref = firebase.database().ref("hotel/room/" + $("#room_name").text())
+        console.log("hotel/room/" + $("#room_name").text())
+        
+        ref.child('room_type').set($('#room_type').text())
+        ref.child('info').child('price').set($('#price').val())
+        ref.child('details').set($('#details').val())
+        let st = 1
+        if($("input[name='optradio']:checked").val()=="option1"){
+          st = "0"
+        }else{
+          st = "1"
         }
-      })
+        ref.child('status').set(st)
+        
+        Swal.fire(
+          'Successful!',
+          'บันทึกสำเร็จ!',
+          'success'
+        )
+      }else{
+        Swal.fire(
+          'Warning!',
+          'กรุณากรอกข้อมูลก่อน!',
+          'warning'
+        )
+      }
       /*
       $('#room_type').val('')
       $('#details').val('')

@@ -7,3 +7,16 @@
 #pa{
     padding: 0px;
 }
+
+.input-group > button{
+    width: 200px;
+    height: 40px;
+}
+
+.form-check{
+    line-height: 40px;
+}
+
+.form-check > span > input{
+    margin-top: 13px;
+}
