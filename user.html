@@ -135,8 +135,9 @@
                 this.status = status
                 super.showDebug(this.name,this.price,this.status);
             }
+
             get status_text(){
-                return (this.status==0)?"ห้องเต็ม":"ห้องว่าง"
+                return (this.status==1)?"ห้องเต็ม":"ห้องว่าง"
             }
 
             showDebug(){
