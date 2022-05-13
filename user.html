@@ -135,11 +135,6 @@
                 this.status = status
                 super.showDebug(this.name,this.price,this.status);
             }
-
-            set set_price(price){
-                this.price = price
-                super.write("hotel/room/"+this.name+"/info","price",this.price)
-            }
             get status_text(){
                 return (this.status==0)?"ห้องเต็ม":"ห้องว่าง"
             }
